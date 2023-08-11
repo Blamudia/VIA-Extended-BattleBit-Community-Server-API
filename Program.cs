@@ -1,63 +1,88 @@
-﻿using BattleBitAPI;
-using BattleBitAPI.Common;
-using BattleBitAPI.Server;
-using System.Threading.Channels;
-using System.Xml;
+using BBR.Community.API;
+using BBR.Community.API.Other.DI;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Hosting;
+using EFCoreSecondLevelCacheInterceptor;
+using MessagePack.Resolvers;
+using MessagePack.Formatters;
+using BBR.Community.API.Other.Cache;
+using MessagePack;
 
-class Program
+var builder = InteractableServiceProvider.Builder;
+
+builder.ConfigureServices((context, services) =>
 {
-    static void Main(string[] args)
+    var config = InteractableServiceProvider.Configuration;
+
+    services.AddDbContext<ApiContext>((serviceProvider, options) =>
     {
-        var listener = new ServerListener<MyPlayer, MyGameServer>();
-        listener.Start(29294);
+        options.UseLazyLoadingProxies()
+        .UseNpgsql(config!.Context.ConnectionString);
+    });
 
-        Thread.Sleep(-1);
+    if (config.Redis.Enabled)
+    {
+        services.AddEFSecondLevelCache(options =>
+        {
+            options.UseEasyCachingCoreProvider(config!.Redis.SerializerName)
+                .UseCacheKeyPrefix("EF_");
+            options.CacheAllQueries(CacheExpirationMode.Absolute, TimeSpan.FromDays(7));
+        });
+
+        services.AddEasyCaching(options =>
+        {
+            options.UseRedis(settings =>
+            {
+                settings.MaxRdSecond = config!.Redis.MaxRdSecond;
+                settings.EnableLogging = config!.Redis.EnableLogging;
+                settings.LockMs = config!.Redis.LockMs;
+                settings.SleepMs = config!.Redis.SleepMs;
+                settings.SerializerName = config!.Redis.SerializerName;
+                settings.DBConfig = new EasyCaching.Redis.RedisDBOptions()
+                {
+                    Password = config!.Redis.DbConfig.Password,
+                    IsSsl = config!.Redis.DbConfig.IsSsl,
+                    SslHost = config!.Redis.DbConfig.SslHost,
+                    SyncTimeout = config!.Redis.DbConfig.SyncTimeout,
+                    AsyncTimeout = config!.Redis.DbConfig.AsyncTimeout,
+                    ConnectionTimeout = config!.Redis.DbConfig.ConnectionTimeout,
+                    AllowAdmin = config!.Redis.DbConfig.AllowAdmin,
+                };
+
+                config!.Redis.DbConfig.Endpoints.ForEach(endpoint =>
+                    settings.DBConfig.Endpoints.Add(
+                        new EasyCaching.Core.Configurations.ServerEndPoint(endpoint.Host, endpoint.Port))
+                );
+            }, config!.Redis.SerializerName)
+                .WithMessagePack(options =>
+                {
+                    options.EnableCustomResolver = true;
+                    options.CustomResolvers = CompositeResolver.Create(
+                        new IMessagePackFormatter[]
+                        {
+                    DBNullFormatter.Instance, // This is necessary for the null values
+                        },
+                        new IFormatterResolver[]
+                        {
+                    NativeDateTimeResolver.Instance,
+                    ContractlessStandardResolver.Instance,
+                    StandardResolverAllowPrivate.Instance,
+                        });
+                }, config!.Redis.SerializerName);
+        });
     }
+});
 
+var app = builder.Build();
 
-}
-class MyPlayer : Player<MyPlayer>
+if (InteractableServiceProvider.Configuration.EfCore.MigrateOnStartup)
 {
-    public override async Task OnConnected()
+    using (var serviceScope = app.Services.GetRequiredService<IServiceScopeFactory>().CreateScope())
     {
+        var context = serviceScope.ServiceProvider.GetService<ApiContext>();
+        context?.Database.Migrate();
     }
 }
-class MyGameServer : GameServer<MyPlayer>
-{
-    public override async Task OnConnected()
-    {
-        ForceStartGame();
 
-        ServerSettings.PointLogEnabled = false;
-    }
-
-
-    public override async Task OnPlayerConnected(MyPlayer player)
-    {
-        await Console.Out.WriteLineAsync("Connected: " + player);
-    }
-    public override async Task OnPlayerSpawned(MyPlayer player)
-    {
-        await Console.Out.WriteLineAsync("Spawned: " + player);
-    }
-    public override async Task OnAPlayerDownedAnotherPlayer(OnPlayerKillArguments<MyPlayer> args)
-    {
-        await Console.Out.WriteLineAsync("Downed: " + args.Victim);
-    }
-    public override async Task OnPlayerGivenUp(MyPlayer player)
-    {
-        await Console.Out.WriteLineAsync("Giveup: " + player);
-    }
-    public override async Task OnPlayerDied(MyPlayer player)
-    {
-        await Console.Out.WriteLineAsync("Died: " + player);
-    }
-    public override async Task OnAPlayerRevivedAnotherPlayer(MyPlayer from, MyPlayer to)
-    {
-        await Console.Out.WriteLineAsync(from + " revived " + to);
-    }
-    public override async Task OnPlayerDisconnected(MyPlayer player)
-    {
-        await Console.Out.WriteLineAsync("Disconnected: " + player);
-    }
-}
+app.Run();

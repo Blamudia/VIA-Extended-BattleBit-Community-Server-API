@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
@@ -7,5 +7,37 @@
     <Nullable>disable</Nullable>
     <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
   </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="appsettings.json" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="appsettings.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Modules\GameModes\Infected\Context\" />
+    <Folder Include="Utils\" />
+  </ItemGroup>
+	
+  <ItemGroup>
+    <PackageReference Include="EasyCaching.Core" Version="1.9.0" />
+    <PackageReference Include="EasyCaching.InMemory" Version="1.9.0" />
+    <PackageReference Include="EasyCaching.Redis" Version="1.9.0" />
+    <PackageReference Include="EasyCaching.Serialization.MessagePack" Version="1.9.0" />
+    <PackageReference Include="EFCore.NamingConventions" Version="7.0.2" />
+    <PackageReference Include="EFCore.SoftDelete" Version="1.3.0" />
+    <PackageReference Include="EFCoreSecondLevelCacheInterceptor" Version="3.9.2" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Proxies" Version="7.0.10" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="7.0.10" />
+    <PackageReference Include="Microsoft.Extensions.Hosting" Version="7.0.1" />
+    <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="7.0.0" />
+    <PackageReference Include="morelinq" Version="3.4.2" />
+    <PackageReference Include="Npgsql" Version="7.0.4" />
+    <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="7.0.4" />
+  </ItemGroup>
 
 </Project>
