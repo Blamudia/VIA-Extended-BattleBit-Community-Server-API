@@ -1,9 +1,10 @@
-﻿using BBR.Community.API.Modules.GameModes.Infected.Instance;
+﻿using BBR.Community.API;
+using CommunityServerAPI.VIA.Modules.GameModes.Infected.Instance;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
-namespace BBR.Community.API.Other.DI
+namespace CommunityServerAPI.VIA.Other.DI
 {
     public sealed class InteractableServiceProvider
     {
@@ -16,7 +17,7 @@ namespace BBR.Community.API.Other.DI
                 .ConfigureAppConfiguration(app =>
                 {
                     var configBuilder = app.AddJsonFile("appsettings.json");
-                    Configuration = ConfigurationBinder.Get<Configuration>(configBuilder.Build()) ?? new Configuration();
+                    Configuration = configBuilder.Build().Get<Configuration>() ?? new Configuration();
 
 
                 })

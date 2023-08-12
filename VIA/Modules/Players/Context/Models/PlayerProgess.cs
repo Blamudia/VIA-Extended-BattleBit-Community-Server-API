@@ -2,26 +2,27 @@
 using System.ComponentModel.DataAnnotations;
 using SoftDeletes.ModelTools;
 using SoftDeletes.Core;
-using BattleBitAPI.Common;
-using BattleBitAPI.Server;
-using System.Net;
 
-namespace CommunityServerAPI.Modules.Players.Context.Models
+namespace CommunityServerAPI.VIA.Modules.Players.Context.Models
 {
-    [Table("player", Schema = "player_data")]
-    public class Player : ModelExtension
+    [Table("progress", Schema = "player_data")]
+    public class PlayerProgress : ModelExtension
     {
         [Key]
-        public ulong SteamId { get; set; }
-        public string Name { get; set; }
-        public bool IsAPenguin { get; set; }
+        public Guid Id { get; set; }
+        public ulong PlayerId { get; set; }
+        [Column(TypeName = "jsonb")]
+        public IEnumerable<byte> ToolProgress { get; set; } = default!;
+
+        [Column(TypeName = "jsonb")]
+        public IEnumerable<byte> Achievements { get; set; } = default!;
+
+        [Column(TypeName = "jsonb")]
+        public IEnumerable<byte> Selections { get; set; } = default!;
 
         #region Relations
-        [InverseProperty(nameof(PlayerStats.Player))]
-        public virtual PlayerStats Stats { get; set; } = default!;
-
-        [InverseProperty(nameof(PlayerProgress.Player))]
-        public virtual PlayerStats Progress { get; set; } = default!;
+        [ForeignKey(nameof(PlayerId))]
+        public virtual Player Player { get; set; }
         #endregion
 
 

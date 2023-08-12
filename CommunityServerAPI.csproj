@@ -19,8 +19,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Modules\GameModes\Infected\Context\" />
-    <Folder Include="Utils\" />
+    <Folder Include="VIA\Modules\GameModes\Infected\Context\" />
+    <Folder Include="VIA\Utils\" />
   </ItemGroup>
 	
   <ItemGroup>

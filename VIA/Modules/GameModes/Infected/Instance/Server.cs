@@ -1,11 +1,12 @@
 ﻿using BattleBitAPI.Server;
+using BBR.Community.API;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using System.Net;
 using System.Threading;
 
-namespace BBR.Community.API.Modules.GameModes.Infected.Instance
+namespace CommunityServerAPI.VIA.Modules.GameModes.Infected.Instance
 {
     //TODO: resolve inside a service layer which is callable via either itself eg; chat or endpoint in order to switch gamemode/server for example
     public class Server : IHostedService, IDisposable

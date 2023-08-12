@@ -2,24 +2,16 @@
 using System.ComponentModel.DataAnnotations;
 using SoftDeletes.ModelTools;
 using SoftDeletes.Core;
-using BattleBitAPI;
 
-namespace CommunityServerAPI.Modules.Players.Context.Models
+namespace CommunityServerAPI.VIA.Modules.Players.Context.Models
 {
-    [Table("progress", Schema = "player_data")]
-    public class PlayerProgress : ModelExtension
+    [Table("stats", Schema = "player_data")]
+    public class PlayerStats : ModelExtension
     {
         [Key]
         public Guid Id { get; set; }
         public ulong PlayerId { get; set; }
-        [Column(TypeName = "jsonb")]
-        public IEnumerable<byte> ToolProgress { get; set; } = default!;
-
-        [Column(TypeName = "jsonb")]
-        public IEnumerable<byte> Achievements { get; set; } = default!;
-
-        [Column(TypeName = "jsonb")]
-        public IEnumerable<byte> Selections { get; set; } = default!;
+        public uint KillCount { get; set; }
 
         #region Relations
         [ForeignKey(nameof(PlayerId))]

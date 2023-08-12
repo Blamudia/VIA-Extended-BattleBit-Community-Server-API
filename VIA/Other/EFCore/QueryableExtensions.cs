@@ -1,6 +1,7 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using CommunityServerAPI.VIA.Other.EFCore;
+using Microsoft.EntityFrameworkCore;
 
-namespace BBR.Community.API.Other.EFCore
+namespace CommunityServerAPI.VIA.Other.EFCore
 {
     public static class QueryableExtensions
     {

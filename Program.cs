@@ -1,14 +1,13 @@
 using BBR.Community.API;
-using BBR.Community.API.Other.DI;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Hosting;
 using EFCoreSecondLevelCacheInterceptor;
 using MessagePack.Resolvers;
 using MessagePack.Formatters;
-using BBR.Community.API.Other.Cache;
 using MessagePack;
-using BBR.Community.API.Modules.GameModes.Infected.Instance;
+using CommunityServerAPI.VIA.Other.Cache;
+using CommunityServerAPI.VIA.Other.DI;
 
 var builder = InteractableServiceProvider.Builder;
 

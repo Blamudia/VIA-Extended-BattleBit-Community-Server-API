@@ -1,7 +1,7 @@
 ﻿using MessagePack.Formatters;
 using MessagePack;
 
-namespace BBR.Community.API.Other.Cache
+namespace CommunityServerAPI.VIA.Other.Cache
 {
     public class DBNullFormatter : IMessagePackFormatter<DBNull>
     {

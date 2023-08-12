@@ -3,19 +3,22 @@ using System.ComponentModel.DataAnnotations;
 using SoftDeletes.ModelTools;
 using SoftDeletes.Core;
 
-namespace CommunityServerAPI.Modules.Players.Context.Models
+namespace CommunityServerAPI.VIA.Modules.Players.Context.Models
 {
-    [Table("stats", Schema = "player_data")]
-    public class PlayerStats : ModelExtension
+    [Table("player", Schema = "player_data")]
+    public class Player : ModelExtension
     {
         [Key]
-        public Guid Id { get; set; }
-        public ulong PlayerId { get; set; }
-        public uint KillCount { get; set; }
+        public ulong SteamId { get; set; }
+        public string Name { get; set; }
+        public bool IsAPenguin { get; set; }
 
         #region Relations
-        [ForeignKey(nameof(PlayerId))]
-        public virtual Player Player { get; set; }
+        [InverseProperty(nameof(PlayerStats.Player))]
+        public virtual PlayerStats Stats { get; set; } = default!;
+
+        [InverseProperty(nameof(PlayerProgress.Player))]
+        public virtual PlayerStats Progress { get; set; } = default!;
         #endregion
 
 

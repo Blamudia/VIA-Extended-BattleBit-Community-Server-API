@@ -1,7 +1,7 @@
 ﻿using BattleBitAPI.Common;
 using BattleBitAPI.Server;
 
-namespace BBR.Community.API.Modules.GameModes.Infected.Instance
+namespace CommunityServerAPI.VIA.Modules.GameModes.Infected.Instance
 {
     //TODO, cleanup contents. actually integrate in api
     class MyGameServer : GameServer<MyPlayer>
