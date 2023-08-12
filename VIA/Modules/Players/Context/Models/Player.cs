@@ -18,7 +18,7 @@ namespace CommunityServerAPI.VIA.Modules.Players.Context.Models
         public virtual PlayerStats Stats { get; set; } = default!;
 
         [InverseProperty(nameof(PlayerProgress.Player))]
-        public virtual PlayerStats Progress { get; set; } = default!;
+        public virtual PlayerProgress Progress { get; set; } = default!;
         #endregion
 
 
