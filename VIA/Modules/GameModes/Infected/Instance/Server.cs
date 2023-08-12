@@ -26,13 +26,11 @@ namespace CommunityServerAPI.VIA.Modules.GameModes.Infected.Instance
 
         public Task StartAsync(CancellationToken cancellationToken)
         {
-            // limit all to 30sec for now
             if (!_listener.IsListening)
                 _listener.Start(
                     IPAddress.Parse(_configuration.BattleBit.IP),
                     _configuration.BattleBit.Port
                 );
-
 
             return Task.CompletedTask;
         }
