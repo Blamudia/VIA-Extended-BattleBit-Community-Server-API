@@ -8,6 +8,7 @@ using MessagePack.Resolvers;
 using MessagePack.Formatters;
 using BBR.Community.API.Other.Cache;
 using MessagePack;
+using BBR.Community.API.Modules.GameModes.Infected.Instance;
 
 var builder = InteractableServiceProvider.Builder;
 

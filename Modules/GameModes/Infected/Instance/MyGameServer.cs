@@ -3,7 +3,7 @@ using BattleBitAPI.Server;
 
 namespace BBR.Community.API.Modules.GameModes.Infected.Instance
 {
-    //TODO, cleanup contents. integrate in api
+    //TODO, cleanup contents. actually integrate in api
     class MyGameServer : GameServer<MyPlayer>
     {
 

@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using BBR.Community.API.Modules.GameModes.Infected.Instance;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
@@ -16,11 +17,13 @@ namespace BBR.Community.API.Other.DI
                 {
                     var configBuilder = app.AddJsonFile("appsettings.json");
                     Configuration = ConfigurationBinder.Get<Configuration>(configBuilder.Build()) ?? new Configuration();
-                    var x = 5;
+
+
                 })
                 .ConfigureServices(services =>
                 {
                     services.AddLogging();
+                    services.AddHostedService<Server>();
                 });
     }
 }

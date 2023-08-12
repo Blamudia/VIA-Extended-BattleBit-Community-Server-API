@@ -1,7 +1,16 @@
+using System.Net;
+
 namespace BBR.Community.API
 {
     public class Configuration
     {
+        public BattleBitConfig BattleBit { get; set; } = new BattleBitConfig();
+        public class BattleBitConfig
+        {
+            public string IP { get; set; } = "0.0.0.0";
+            public int Port { get; set; } = 29294;
+        }
+
         public EFCoreConfig EfCore { get; set; } = new EFCoreConfig();
         public class EFCoreConfig
         {

@@ -1,27 +1,61 @@
 ﻿using BattleBitAPI.Server;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
+using System.Net;
+using System.Threading;
 
 namespace BBR.Community.API.Modules.GameModes.Infected.Instance
 {
-    public class Server : IHostedService
+    //TODO: resolve inside a service layer which is callable via either itself eg; chat or endpoint in order to switch gamemode/server for example
+    public class Server : IHostedService, IDisposable
     {
-        private static ServerListener<MyPlayer, MyGameServer> _listener = new ServerListener<MyPlayer, MyGameServer>();
+        private readonly ServerListener<MyPlayer, MyGameServer> _listener;
+        private readonly ILogger<Server> _logger;
+        private readonly Configuration _configuration;
 
-        //todo, don't do it this way lmao.
+        private bool _disposed;
+
+        public Server(ILogger<Server> logger, IConfiguration configuration)
+        {
+            _listener = new ServerListener<MyPlayer, MyGameServer>();
+            _logger = logger;
+            _configuration = configuration.Get<Configuration>();
+        }
+
         public Task StartAsync(CancellationToken cancellationToken)
         {
-            //_listener.Start(29294);
+            // limit all to 30sec for now
+            if (!_listener.IsListening)
+                _listener.Start(
+                    IPAddress.Parse(_configuration.BattleBit.IP),
+                    _configuration.BattleBit.Port
+                );
 
-            //lets break shit. not in the mood to safely shut it down yet.
-            Thread.Sleep(-1);
 
             return Task.CompletedTask;
         }
 
         public Task StopAsync(CancellationToken cancellationToken)
         {
-            //_listener.Stop();
+            _logger.LogInformation("Stopping gamemode");
+            _listener.Stop();
+
             return Task.CompletedTask;
+        }
+
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (_disposed)
+                return;
+
+            _disposed = true;
         }
     }
 }

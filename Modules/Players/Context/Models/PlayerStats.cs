@@ -3,24 +3,19 @@ using System.ComponentModel.DataAnnotations;
 using SoftDeletes.ModelTools;
 using SoftDeletes.Core;
 
-namespace BBR.Community.API.Modules.Player.Context.Models
+namespace CommunityServerAPI.Modules.Players.Context.Models
 {
     [Table("stats", Schema = "player_data")]
     public class PlayerStats : ModelExtension
     {
         [Key]
-        public ulong Id { get; set; }
+        public Guid Id { get; set; }
+        public ulong PlayerId { get; set; }
+        public uint KillCount { get; set; }
 
-        [Column(TypeName = "jsonb")]
-        public IEnumerable<byte> ToolProgress { get; set; } = default!;
-
-        [Column(TypeName = "jsonb")]
-        public IEnumerable<byte> Achievements { get; set; } = default!;
-
-        [Column(TypeName = "jsonb")]
-        public IEnumerable<byte> Selections { get; set; } = default!;
         #region Relations
-
+        [ForeignKey(nameof(PlayerId))]
+        public virtual Player Player { get; set; }
         #endregion
 
 

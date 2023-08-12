@@ -1,4 +1,4 @@
-﻿using BBR.Community.API.Modules.Player.Context.Models;
+﻿using CommunityServerAPI.Modules.Players.Context.Models;
 using Microsoft.EntityFrameworkCore;
 using SoftDeletes.ModelTools;
 
@@ -13,7 +13,9 @@ namespace BBR.Community.API
             AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
         }
 
+        public virtual DbSet<Player> Players { get; set; } = default!;
         public virtual DbSet<PlayerStats> PlayerStats { get; set; } = default!;
+        public virtual DbSet<PlayerProgress> PlayerProgresses { get; set; } = default!;
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -23,7 +25,19 @@ namespace BBR.Community.API
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            modelBuilder.Entity<Player>(entity =>
+            {
+                entity.HasQueryFilter(post => post.DeletedAt == null);
+                entity.HasIndex(x => x.DeletedAt);
+            });
+
             modelBuilder.Entity<PlayerStats>(entity =>
+            {
+                entity.HasQueryFilter(post => post.DeletedAt == null);
+                entity.HasIndex(x => x.DeletedAt);
+            });
+
+            modelBuilder.Entity<PlayerProgress>(entity =>
             {
                 entity.HasQueryFilter(post => post.DeletedAt == null);
                 entity.HasIndex(x => x.DeletedAt);
