@@ -1,7 +1,4 @@
-﻿using BattleBitAPI.Common;
-using CommunityServerAPI.BattleBitAPI.Server;
-
-namespace BattleBitAPI.Server
+﻿namespace BattleBitAPI.Server
 {
     public class GamemodeRotation<TPlayer> where TPlayer : Player<TPlayer>
     {

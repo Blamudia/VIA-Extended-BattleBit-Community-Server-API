@@ -24,7 +24,7 @@ namespace CommunityServerAPI.VIA.Modules.GameModes.Infected.Instance
             _configuration = configuration.Get<Configuration>();
         }
 
-        public Task StartAsync(CancellationToken cancellationToken)
+        public async Task StartAsync(CancellationToken cancellationToken)
         {
             if (!_listener.IsListening)
                 _listener.Start(
@@ -32,15 +32,15 @@ namespace CommunityServerAPI.VIA.Modules.GameModes.Infected.Instance
                     _configuration.BattleBit.Port
                 );
 
-            return Task.CompletedTask;
+            await Task.CompletedTask;
         }
 
-        public Task StopAsync(CancellationToken cancellationToken)
+        public async Task StopAsync(CancellationToken cancellationToken)
         {
             _logger.LogInformation("Stopping gamemode");
             _listener.Stop();
 
-            return Task.CompletedTask;
+            await Task.CompletedTask;
         }
 
         public void Dispose()

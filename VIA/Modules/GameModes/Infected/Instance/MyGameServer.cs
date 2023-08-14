@@ -6,84 +6,33 @@ namespace CommunityServerAPI.VIA.Modules.GameModes.Infected.Instance
     //TODO, cleanup contents. actually integrate in api
     class MyGameServer : GameServer<MyPlayer>
     {
-
-        public override async Task OnRoundStarted()
+        public static new TGameServer CreateInstance<TGameServer>(Internal @internal) where TGameServer : MyGameServer
         {
+            TGameServer gameServer = (TGameServer)Activator.CreateInstance(typeof(TGameServer));
+            gameServer.mInternal = @internal;
+            return gameServer;
         }
-        public override async Task OnRoundEnded()
+
+        public override async Task OnPlayerJoiningToServer(ulong steamId, PlayerJoiningArguments args)
         {
+            await Console.Out.WriteLineAsync($"Player joining");
         }
 
         public override async Task OnPlayerConnected(MyPlayer player)
         {
-            bool anyZombiePlayer = false;
-            foreach (var item in AllPlayers)
-            {
-                if (item.IsZombie)
-                {
-                    anyZombiePlayer = true;
-                    break;
-                }
-            }
-
-            if (!anyZombiePlayer)
-            {
-                player.IsZombie = true;
-                player.Message("You are the zombie.");
-                player.Kill();
-            }
+            await Console.Out.WriteLineAsync("Connected: " + player);
         }
 
-        public override async Task OnAPlayerKilledAnotherPlayer(OnPlayerKillArguments<MyPlayer> args)
-        {
-            if (args.Victim.IsZombie)
-            {
-                args.Victim.IsZombie = false;
-                args.Victim.Message("You are no longer zombie");
-
-                AnnounceShort("Choosing new zombie in 5");
-                await Task.Delay(1000);
-                AnnounceShort("Choosing new zombie in 4");
-                await Task.Delay(1000);
-                AnnounceShort("Choosing new zombie in 3");
-                await Task.Delay(1000);
-                AnnounceShort("Choosing new zombie in 2");
-                await Task.Delay(1000);
-                AnnounceShort("Choosing new zombie in 1");
-                await Task.Delay(1000);
-
-                args.Killer.IsZombie = true;
-                args.Killer.SetHeavyGadget(Gadgets.SledgeHammer.ToString(), 0, true);
-            }
-        }
-
-
-        public override async Task<OnPlayerSpawnArguments> OnPlayerSpawning(MyPlayer player, OnPlayerSpawnArguments request)
-        {
-            if (player.IsZombie)
-            {
-                request.Loadout.PrimaryWeapon = default;
-                request.Loadout.SecondaryWeapon = default;
-                request.Loadout.LightGadget = null;
-                request.Loadout.HeavyGadget = Gadgets.SledgeHammer;
-                request.Loadout.Throwable = null;
-            }
-
-            return request;
-        }
         public override async Task OnPlayerSpawned(MyPlayer player)
         {
-            if (player.IsZombie)
-            {
-                player.SetRunningSpeedMultiplier(2f);
-                player.SetJumpMultiplier(2f);
-                player.SetFallDamageMultiplier(0f);
-                player.SetReceiveDamageMultiplier(0.1f);
-                player.SetGiveDamageMultiplier(4f);
-            }
+            player.SetRunningSpeedMultiplier(2f);
+            player.SetJumpMultiplier(2f);
+            player.SetFallDamageMultiplier(0f);
+            player.SetReceiveDamageMultiplier(0.1f);
+            player.SetGiveDamageMultiplier(4f);
+
+            await Task.CompletedTask;
         }
-
-
 
         public override async Task OnConnected()
         {

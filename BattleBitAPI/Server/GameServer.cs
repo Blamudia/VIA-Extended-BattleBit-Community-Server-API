@@ -38,7 +38,7 @@ namespace BattleBitAPI.Server
         public bool ReconnectFlag => mInternal.ReconnectFlag;
 
         // ---- Private Variables ---- 
-        private Internal mInternal;
+        protected Internal mInternal;
 
         // ---- Tick ----
         public async Task Tick()
